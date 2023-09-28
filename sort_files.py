@@ -11,7 +11,7 @@ folders = {
     'bbox3D': ('bounding_box_3d_',),
     'cameraparams': ('camera_params_',),
     'depth': ('distance_to_camera'),
-    'images_png': ('rgb_',),
+    'images': ('rgb_',),
     'other': ()  # All other files will go here
 }
 
