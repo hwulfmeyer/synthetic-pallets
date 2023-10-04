@@ -3,8 +3,8 @@ import os
 from tqdm import tqdm
 import re
 
-src_dir = 'D:\\replicator_pallets_random\\images'
-dest_dir = 'D:\\REPLICATOR_PALLETS_YOLO\\images'
+src_dir = r'C:\Users\Hans\omni.replicator_out\replicator_pallets_random_new\images'
+dest_dir = r'C:\Users\Hans\omni.replicator_out\replicator_pallets_random_new\images_jpg'
 
 # Function to extract the identifier from the filename
 def extract_id(filename, prefix):

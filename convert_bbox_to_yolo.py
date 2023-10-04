@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import re
 
-src_dir = 'D:\\replicator_pallets_random\\bbox2D'
-dest_dir = 'D:\\REPLICATOR_PALLETS_YOLO\\bbox2D'
+src_dir = r'C:\Users\Hans\omni.replicator_out\replicator_pallets_random_new\bbox2D'
+dest_dir = r'C:\Users\Hans\omni.replicator_out\replicator_pallets_random_new\bbox2D_txt'
 
 # Create destination directory if it doesn't exist
 os.makedirs(dest_dir, exist_ok=True)

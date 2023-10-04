@@ -2,7 +2,7 @@ import os
 import shutil
 
 # Define the source directory
-src_dir = 'C://Users//Hans//omni.replicator_out//replicator_pallets_random//bbox2D'
+src_dir = r'C:\Users\Hans\omni.replicator_out\replicator_pallets_random_new'
 
 # Define the folders to create and the file prefixes that belong in them
 folders = {
@@ -10,7 +10,7 @@ folders = {
     'bbox2D': ('bounding_box_2d_tight_',),
     'bbox3D': ('bounding_box_3d_',),
     'cameraparams': ('camera_params_',),
-    'depth': ('distance_to_camera'),
+    'depth': ('distance_to_camera_',),
     'images': ('rgb_',),
     'other': ()  # All other files will go here
 }
