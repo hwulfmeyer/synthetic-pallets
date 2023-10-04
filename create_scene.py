@@ -78,8 +78,8 @@ with rep.new_layer():
 
     # Define the path to the pallet USD file
     PALLET_USD = "omniverse://localhost/NVIDIA/Assets/ArchVis/Industrial/Pallets/Pallet_B1.usd"
-    plane_x=700
-    plane_y=700
+    plane_x=800
+    plane_y=1400
 
     # Create randomizer function for pallet assets
     def env_pallets(size=None):
@@ -103,21 +103,21 @@ with rep.new_layer():
 
 
     # Setup camera
-    camera = rep.create.camera(focal_length=12)
+    camera = rep.create.camera(focal_length=6)
     plane = rep.create.plane(scale=100, visible=True)
     cubes = rep.create.cube(count=2)
     cylinders = rep.create.cylinder(count=2)
     randomobjects = rep.create.group([cubes, cylinders])
 
     pallets_air = [rep.create.from_usd(PALLET_USD) for _ in range(12)]
-    pallets_ground = [rep.create.from_usd(PALLET_USD) for _ in range(10)]
+    pallets_ground = [rep.create.from_usd(PALLET_USD) for _ in range(12)]
 
     pallets_all = rep.create.group(pallets_air+pallets_ground, semantics=[("class", "pallet")])
     pallets_ground_group = rep.create.group(pallets_ground, semantics=[("class", "pallet")])
     pallets_air_group = rep.create.group(pallets_air, semantics=[("class", "pallet")])
 
     # trigger on frame for an interval
-    frames=4000
+    frames=30
     material_interval=10
     plane_interval=3
 
@@ -129,13 +129,13 @@ with rep.new_layer():
 
         with pallets_air_group:
             rep.modify.pose(
-                position=rep.distribution.uniform((-plane_x, 100, -plane_y), (plane_x, 300, -300)),
+                position=rep.distribution.uniform((-plane_x, 100, -plane_y), (plane_x, 500, -300)),
                 rotation=rep.distribution.uniform((-90, -180, 0), (-90, 180, 0)),
             )
 
         with pallets_ground_group:
             rep.modify.pose(
-                position=rep.distribution.uniform((-plane_x/2, 0, -plane_y), (plane_x, 0, 0)),
+                position=rep.distribution.uniform((-plane_x, 0, -plane_y), (plane_x, 0, -200)),
                 rotation=rep.distribution.uniform((-90, -180, 0), (-90, 180, 0)),
             )
 
