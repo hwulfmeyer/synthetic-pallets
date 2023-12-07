@@ -54,7 +54,7 @@ with rep.new_layer():
                     "omniverse://localhost/NVIDIA/Assets/Skies/Indoor/ZetoCGcom_ExhibitionHall_Interior1.hdr",
                 ]
             ),
-            intensity=rep.distribution.normal(600, 200),
+            intensity=rep.distribution.normal(300, 200),
             temperature=rep.distribution.normal(6500, 1000)
         )
         return lights.node
@@ -79,76 +79,37 @@ with rep.new_layer():
     # Define the path to the pallet USD file
     PALLET_USD = "omniverse://localhost/NVIDIA/Assets/ArchVis/Industrial/Pallets/Pallet_B1.usd"
     plane_x=800
-    plane_y=1400
-
-    # Create randomizer function for pallet assets
-    def env_pallets(size=None):
-        pallets = rep.randomizer.instantiate(
-            [PALLET_USD],  # Note: Here we use a list containing the USD path as the argument
-            size=size,
-            mode="reference",
-        )
-        with pallets:
-            rep.modify.pose(
-                position=rep.distribution.uniform((-plane_x, 0, -plane_y), (plane_x, 200, -100)),
-                rotation=rep.distribution.uniform((-90, -180, 0), (-90, 180, 0)),
-            )
-            rep.randomizer.materials(pallet_materials)
-            rep.modify.semantics([("class", "pallet")])
-
-        return pallets.node
-
-    #rep.randomizer.register(env_pallets)
-
-
+    plane_y=1200
 
     # Setup camera
     camera = rep.create.camera(focal_length=6)
     plane = rep.create.plane(scale=100, visible=True)
-    cubes = rep.create.cube(count=2)
-    cylinders = rep.create.cylinder(count=2)
-    randomobjects = rep.create.group([cubes, cylinders])
 
-    pallets_air = [rep.create.from_usd(PALLET_USD) for _ in range(12)]
-    pallets_ground = [rep.create.from_usd(PALLET_USD) for _ in range(12)]
+    pallets_front = [rep.create.from_usd(PALLET_USD) for _ in range(4)]
+    pallets_front_group = rep.create.group(pallets_front, semantics=[("class", "pallet")])
 
-    pallets_all = rep.create.group(pallets_air+pallets_ground, semantics=[("class", "pallet")])
-    pallets_ground_group = rep.create.group(pallets_ground, semantics=[("class", "pallet")])
-    pallets_air_group = rep.create.group(pallets_air, semantics=[("class", "pallet")])
+    pallets_all = rep.create.group(pallets_front, semantics=[("class", "pallet")])
 
     # trigger on frame for an interval
-    frames=400
+    frames=100
     material_interval=10
     plane_interval=3
 
     with rep.trigger.on_frame(num_frames=int(frames*material_interval)):
                 
         rep.randomizer.dome_lights()
-        rep.randomizer.sphere_lights(4)
-        #rep.randomizer.env_pallets(45)
+        rep.randomizer.sphere_lights(2)
 
-        with pallets_air_group:
+        with pallets_front_group:
             rep.modify.pose(
-                position=rep.distribution.uniform((-plane_x, 100, -plane_y), (plane_x, 500, -300)),
-                rotation=rep.distribution.choice([(-90, -180, 0), (-90, -90, 0), (-90, 0, 0), (-90, 90, 0), (-90, 180, 0)]),
-            )
-
-        with pallets_ground_group:
-            rep.modify.pose(
-                position=rep.distribution.uniform((-plane_x, 0, -plane_y), (plane_x, 0, -200)),
-                rotation=rep.distribution.choice([(-90, -180, 0), (-90, -90, 0), (-90, 0, 0), (-90, 90, 0), (-90, 180, 0)]),
+                position=rep.distribution.uniform((-600, 0, -plane_y), (600, 0, -plane_y)),
+                rotation=rep.distribution.choice([(-90, 90, 0), (-90, 90, 0)]),
             )
 
         with camera:
             rep.modify.pose(
-                position=rep.distribution.uniform((0, 60, 0), (0, 70, 0)),
-            )
-
-        with randomobjects:
-            rep.modify.pose(
-                position=rep.distribution.uniform((-plane_x, 0, -plane_y), (plane_x, 0, -100)),
-                rotation=rep.distribution.uniform((0, -180, 0), (0, 180, 0)),
-                scale=rep.distribution.uniform((1, 1, 1), (1.2, 10, 1.2)),
+                position=rep.distribution.uniform((0, 10, -900), (0, 80, -250)),
+                rotation=rep.distribution.normal((0, 0, 0), (0, 15, 0)),
             )
 
     with rep.trigger.on_frame(num_frames=int(frames*material_interval/plane_interval), interval=plane_interval): 
@@ -157,8 +118,6 @@ with rep.new_layer():
 
 
     with rep.trigger.on_frame(num_frames=frames, interval=material_interval):
-        with randomobjects:
-            rep.randomizer.materials(materials=all_materials)
         with pallets_all:
             rep.randomizer.materials(materials=pallet_materials)
 
@@ -166,7 +125,7 @@ with rep.new_layer():
     render_product = rep.create.render_product(camera, resolution=(1280, 1280))
     basic_writer = rep.WriterRegistry.get("BasicWriter")
     basic_writer.initialize(
-        output_dir=f"replicator_pallets_random_new",
+        output_dir=f"pallets_frontal",
         rgb=True,
         bounding_box_2d_tight=True,
         bounding_box_3d=False,
